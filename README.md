@@ -19,7 +19,7 @@ HOME_LAB_SETTING
 type-1
 hyper v - proxmox
 os - ubunto
-
+```
 4. rufus-4.5 다운로드
 - 간편하게 부팅 가능한 USB 드라이브 만들기
 
