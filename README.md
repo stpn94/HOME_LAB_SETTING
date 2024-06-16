@@ -19,14 +19,15 @@ HOME_LAB_SETTING
 type-1
 hyper v - proxmox
 os - ubunto
-```
+
 4. rufus-4.5 다운로드
 - 간편하게 부팅 가능한 USB 드라이브 만들기
 
 5. proxmox-ve_8.2-1.iso 다운로드
 - rufus 돌리기
+```
 
-__ ※HDD서버가  인식이 안됨.
+__ ※HDD서버가  인식이 안됨. __
 BIOS 업데이트 - 소용없음
 여러가지 펌웨어 업데이트 - 소용없음
 디스크 접촉불량 - 아님
