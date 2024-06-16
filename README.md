@@ -2,7 +2,7 @@
 HOME_LAB_SETTING
 
 ## - 0.서버 셋팅
-```
+
 1. 서버 구매
 - 당근에서 아무거나 구매 (DELL PowerEdge_T410 12만원에 구매)
 
@@ -25,7 +25,7 @@ os - ubunto
 
 5. proxmox-ve_8.2-1.iso 다운로드
 - rufus 돌리기
-```
+
 
 **※HDD서버가  인식이 안됨.**
 
@@ -41,11 +41,15 @@ BIOS 업데이트 - 소용없음
 배송 오래걸림.
 
 일딴은 250GB 2개로 RAID 1
-남은 1TB와 250GB 는 단일로 사용**
+남은 1TB와 250GB 는 단일로 사용
 
+추가로 1TB 2TB 더 구매했는데
+아무래도 HDD가 중고이다 보니 RAID 1과 RAID0을 같이 사용하는
+RAID 10 으로 셋팅예정
+![image](https://github.com/stpn94/HOME_LAB_SETTING/assets/79563672/01941761-562d-42c5-ad3e-54ce4131d4e5)
 
-## - 1. Proxmox VE 설치 후 초기 업데이트
-```
+## -1. Proxmox VE 설치 후 초기 업데이트
+
 - Proxmox 설치 후, 최신 보안 업데이트 및 소프트웨어 업데이트를 수행해야 합니다.
 - 언제: 설치 직후
 - 어디서: 터미널에서
@@ -53,38 +57,19 @@ BIOS 업데이트 - 소용없음
 - 어떻게: apt 명령어를 사용하여 업데이트 수행
 - 왜: 최신 보안 패치 적용 및 소프트웨어 안정성 향상
 
+```
 apt update
 apt full-upgrade -y
+```
 
 - 업데이트 후 시스템 재부팅이 필요할 수 있습니다.
 - 시스템 재부팅 명령어:
+```
 reboot
 ```
 
+## -2. Enterprise 구독 비활성화
 
-
-#- 1. No-Subscription 저장소 추가
-```
-- Proxmox는 기본적으로 Enterprise 저장소를 사용합니다. 이는 구독 없이 접근할 수 없으므로, No-Subscription 저장소를 추가해야 합니다.
-- 언제: Proxmox 설치 직후
-- 어디서: /etc/apt/sources.list.d/pve-no-subscription.list 파일 생성
-- 무엇을: No-Subscription 저장소 추가
-- 어떻게: 파일에 저장소 주소 추가
-- 왜: 구독 없이 업데이트 및 패키지를 설치하기 위해
-
-- 파일 생성 및 저장소 주소 추가
-echo "deb http://download.proxmox.com/debian/pve buster pve-no-subscription" > /etc/apt/sources.list.d/pve-no-subscription.list
-
-- 패키지 리스트를 업데이트합니다.
-apt update
-
-- 저장소 목록 확인
-cat /etc/apt/sources.list.d/pve-no-subscription.list
-```
-![image](https://github.com/stpn94/HOME_LAB_SETTING/assets/79563672/d9ae6740-f7e3-48f1-8ed2-6b6c3c2f3ee0)
-
-##- 2. Enterprise 구독 비활성화
-```
 - 기본적으로 설정된 Enterprise 저장소를 비활성화합니다.
 - 언제: Proxmox 설치 직후
 - 어디서: /etc/apt/sources.list.d/pve-enterprise.list 파일
@@ -93,41 +78,65 @@ cat /etc/apt/sources.list.d/pve-no-subscription.list
 - 왜: 구독 팝업을 제거하고, 구독 없이 업데이트를 받기 위해
 
 - 파일 내용을 주석 처리
-sed -i.bak "s/^deb/#deb/" /etc/apt/sources.list.d/pve-enterprise.list
 
-- 변경 사항 확인
-cat /etc/apt/sources.list.d/pve-enterprise.list
-
-- 변경된 저장소 리스트를 적용하기 위해 패키지 리스트를 업데이트합니다.
-apt update
 ```
-명령어와 확인 방법(저장소 추가 후 업데이트 확인)
+sed -i.bak "s/^deb/#deb/" /etc/apt/sources.list.d/pve-enterprise.list
+```
+- 변경 사항 확인
+```
+cat /etc/apt/sources.list.d/pve-enterprise.list
 ```
 - 패키지 리스트를 업데이트하여 저장소가 제대로 추가되었는지 확인합니다.
+```
 apt update
-
+```
 - 설치 가능한 패키지 리스트를 확인합니다.
+```
 apt list --upgradable
 ```
-##- 2. Subscription 팝업 제거
-```
+## -3. Subscription 팝업 제거
+
 - Proxmox는 기본적으로 비상업용 무료 사용자를 위한 구독 팝업을 표시합니다.
 - 언제: Proxmox 설치 후 초기 설정 시
 - 어디서: /etc/apt/sources.list.d/pve-enterprise.list 파일
 - 무엇을: 구독 팝업 제거
 - 어떻게: 파일의 내용을 주석 처리
 - 왜: 불필요한 팝업을 제거하여 사용성을 높이기 위해
-
+```
 sed -i.bak "s/^deb/#deb/" /etc/apt/sources.list.d/pve-enterprise.list
-
+```
 - 저장소 목록을 추가하여 업데이트를 진행합니다.
+```
 echo "deb http://download.proxmox.com/debian/pve buster pve-no-subscription" > /etc/apt/sources.list.d/pve-no-subscription.list
+```
 
-- 변경 사항을 적용하기 위해 패키지 리스트를 업데이트합니다.
+# -4. No-Subscription 저장소 추가
+
+- Proxmox는 기본적으로 Enterprise 저장소를 사용합니다. 이는 구독 없이 접근할 수 없으므로, No-Subscription 저장소를 추가해야 합니다.
+- 언제: Proxmox 설치 직후
+- 어디서: /etc/apt/sources.list.d/pve-no-subscription.list 파일 생성
+- 무엇을: No-Subscription 저장소 추가
+- 어떻게: 파일에 저장소 주소 추가
+- 왜: 구독 없이 업데이트 및 패키지를 설치하기 위해
+
+- 파일 생성 및 저장소 주소 추가
+
+```
+echo "deb http://download.proxmox.com/debian/pve buster pve-no-subscription" > /etc/apt/sources.list.d/pve-no-subscription.list
+```
+- 패키지 리스트를 업데이트합니다.
+```
 apt update
 ```
-##- 3. 네트워크 설정
+- 저장소 목록 확인
 ```
+cat /etc/apt/sources.list.d/pve-no-subscription.list
+```
+![image](https://github.com/stpn94/HOME_LAB_SETTING/assets/79563672/d9ae6740-f7e3-48f1-8ed2-6b6c3c2f3ee0)
+
+
+##- 3. 네트워크 설정
+
 - 네트워크 설정을 통해 Proxmox 서버의 IP 주소를 고정할 수 있습니다.
 - 언제: 초기 설정 시
 - 어디서: /etc/network/interfaces 파일
@@ -151,10 +160,10 @@ systemctl restart networking
 
 - 네트워크 설정 확인:
 ip addr show eth0
-```
+
 
 ##- 4. 시간대 설정
-```
+
 - Proxmox 서버의 시간대를 정확하게 설정합니다.
 - 언제: 초기 설정 시
 - 어디서: 터미널에서
@@ -166,10 +175,10 @@ timedatectl set-timezone Asia/Seoul
 
 - 설정된 시간대 확인:
 timedatectl
-```
+
 
 ##- 5. NTP 서버 설정
-```
+
 - 시간 동기화를 위해 NTP(Network Time Protocol) 서버를 설정합니다.
 - 언제: 초기 설정 시
 - 어디서: /etc/systemd/timesyncd.conf 파일
@@ -188,9 +197,9 @@ systemctl restart systemd-timesyncd
 
 - NTP 동기화 상태 확인:
 timedatectl status
-```
+
 ##- 6. SMTP 설정
-```
+
 - Proxmox에서 이메일 알림을 받기 위해 SMTP 서버 설정을 합니다.
 - 언제: 초기 설정 시
 - 어디서: /etc/ssmtp/ssmtp.conf 파일
@@ -213,10 +222,10 @@ echo "Test email from Proxmox" | mail -s "Proxmox Test Email" your-email@example
 
 - 메일 로그 확인:
 tail -f /var/log/mail.log
-```
+
 
 #- 7. ZFS 파일 시스템 설정 (옵션)
-```
+
 - ZFS 파일 시스템을 사용하여 데이터의 신뢰성과 성능을 높일 수 있습니다.
 - 언제: 초기 설정 시
 - 어디서: 터미널에서
@@ -236,4 +245,4 @@ zfs set mountpoint=/mnt/mypool mypool
 
 - 마운트 상태 확인:
 df -h | grep mypool
-```
+
