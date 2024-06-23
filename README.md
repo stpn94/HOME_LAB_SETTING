@@ -148,6 +148,19 @@ sed -Ezi.bak "s/(Ext.Msg.show\(\{\s+title: gettext\('No valid sub)/void\(\{ \/\/
 ### 4. 삭제하려면
 ![image](https://github.com/stpn94/HOME_LAB_SETTING/assets/79563672/10a7cf0f-0a3c-4652-abc7-03d7a320aba2)
 
+## -3. 백업.
+### 3-1 백업 저장소 확인.
+```
+pvesm status
+```
+![image](https://github.com/stpn94/HOME_LAB_SETTING/assets/79563672/0359692b-246a-44ea-9a61-0fa840af279d)
+
+### 3-2 
+
+```
+vzdump 100 --storage local --mode snapshot --compress lzo
+```
+
 ##- 3. 네트워크 설정
 
 - 네트워크 설정을 통해 Proxmox 서버의 IP 주소를 고정할 수 있습니다.
