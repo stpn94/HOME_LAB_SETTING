@@ -148,6 +148,43 @@ sed -Ezi.bak "s/(Ext.Msg.show\(\{\s+title: gettext\('No valid sub)/void\(\{ \/\/
 ### 4. 삭제하려면
 ![image](https://github.com/stpn94/HOME_LAB_SETTING/assets/79563672/10a7cf0f-0a3c-4652-abc7-03d7a320aba2)
 
+## -6. 파티션이 통합
+![image](https://github.com/stpn94/HOME_LAB_SETTING/assets/79563672/e90de93f-8549-4372-bfb6-3b273755ff88)
+![image](https://github.com/stpn94/HOME_LAB_SETTING/assets/79563672/57b79111-cf64-4422-88fb-f0272662d1ab)
+![image](https://github.com/stpn94/HOME_LAB_SETTING/assets/79563672/31ddc4b3-f4f0-4acc-ba79-64f37a1f2d64)
+
+
+### 6-1 논리적 볼륨 확
+
+```
+lvs
+```
+![image](https://github.com/stpn94/HOME_LAB_SETTING/assets/79563672/984eb3f8-1f1a-48fe-8b6e-61774523b583)
+
+```
+df -h
+```
+![image](https://github.com/stpn94/HOME_LAB_SETTING/assets/79563672/8e440c66-30c8-4250-b56b-7fa265dfd96d)
+
+```
+lvremove /dev/pve/data
+```
+![image](https://github.com/stpn94/HOME_LAB_SETTING/assets/79563672/43024c71-8e45-4e5e-bc69-75cffb8daac8)
+![image](https://github.com/stpn94/HOME_LAB_SETTING/assets/79563672/3000549f-09c6-4fd8-89c5-e0263f32e5c0)
+![image](https://github.com/stpn94/HOME_LAB_SETTING/assets/79563672/41825a44-2a70-45ba-acf3-00c6ffdee0ef)
+
+```
+lvresize -l +100%FREE /dev/pve/root
+```
+![image](https://github.com/stpn94/HOME_LAB_SETTING/assets/79563672/a19ec0ee-c12a-4118-bd15-5a3a4d6692fb)
+```
+resize2fs -p /dev/pve/root
+```
+![image](https://github.com/stpn94/HOME_LAB_SETTING/assets/79563672/477ec2db-84af-4fb6-a9dc-19f3b5b0aaf5)
+
+
+
+
 ## -3. 백업.
 ### 3-1 백업 저장소 확인.
 ```
@@ -155,10 +192,18 @@ pvesm status
 ```
 ![image](https://github.com/stpn94/HOME_LAB_SETTING/assets/79563672/0359692b-246a-44ea-9a61-0fa840af279d)
 
-### 3-2 
+### 1.1 local 저장소로 백업
 
 ```
 vzdump 100 --storage local --mode snapshot --compress lzo
+```
+### 1.2 local-lvm 저장소로 백업
+```
+vzdump 100 --storage local-lvm --mode snapshot --compress lzo
+```
+### 1.3 vm 저장소로 백업
+```
+vzdump 100 --storage vm --mode snapshot --compress lzo
 ```
 
 ##- 3. 네트워크 설정
