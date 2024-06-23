@@ -68,49 +68,7 @@ apt full-upgrade -y
 reboot
 ```
 
-## -2. Enterprise 구독 비활성화
-
-- 기본적으로 설정된 Enterprise 저장소를 비활성화합니다.
-- 언제: Proxmox 설치 직후
-- 어디서: /etc/apt/sources.list.d/pve-enterprise.list 파일
-- 무엇을: Enterprise 저장소 주석 처리
-- 어떻게: 파일 내용을 주석 처리
-- 왜: 구독 팝업을 제거하고, 구독 없이 업데이트를 받기 위해
-
-- 파일 내용을 주석 처리
-
-```
-sed -i.bak "s/^deb/#deb/" /etc/apt/sources.list.d/pve-enterprise.list
-```
-- 변경 사항 확인
-```
-cat /etc/apt/sources.list.d/pve-enterprise.list
-```
-- 패키지 리스트를 업데이트하여 저장소가 제대로 추가되었는지 확인합니다.
-```
-apt update
-```
-- 설치 가능한 패키지 리스트를 확인합니다.
-```
-apt list --upgradable
-```
-## -3. Subscription 팝업 제거
-
-- Proxmox는 기본적으로 비상업용 무료 사용자를 위한 구독 팝업을 표시합니다.
-- 언제: Proxmox 설치 후 초기 설정 시
-- 어디서: /etc/apt/sources.list.d/pve-enterprise.list 파일
-- 무엇을: 구독 팝업 제거
-- 어떻게: 파일의 내용을 주석 처리
-- 왜: 불필요한 팝업을 제거하여 사용성을 높이기 위해
-```
-sed -i.bak "s/^deb/#deb/" /etc/apt/sources.list.d/pve-enterprise.list
-```
-- 저장소 목록을 추가하여 업데이트를 진행합니다.
-```
-echo "deb http://download.proxmox.com/debian/pve buster pve-no-subscription" > /etc/apt/sources.list.d/pve-no-subscription.list
-```
-
-# -4. No-Subscription 저장소 추가
+# -2. No-Subscription 저장소 추가
 
 - Proxmox는 기본적으로 Enterprise 저장소를 사용합니다. 이는 구독 없이 접근할 수 없으므로, No-Subscription 저장소를 추가해야 합니다.
 - 언제: Proxmox 설치 직후
@@ -135,6 +93,61 @@ cat /etc/apt/sources.list.d/pve-no-subscription.list
 ![image](https://github.com/stpn94/HOME_LAB_SETTING/assets/79563672/d9ae6740-f7e3-48f1-8ed2-6b6c3c2f3ee0)
 
 
+## -3. Enterprise 구독 비활성화
+
+- 기본적으로 설정된 Enterprise 저장소를 비활성화합니다.
+- 언제: Proxmox 설치 직후
+- 어디서: /etc/apt/sources.list.d/pve-enterprise.list 파일
+- 무엇을: Enterprise 저장소 주석 처리
+- 어떻게: 파일 내용을 주석 처리
+- 왜: 구독 팝업을 제거하고, 구독 없이 업데이트를 받기 위해
+
+- 파일 내용을 주석 처리
+
+```
+sed -i.bak "s/^deb/#deb/" /etc/apt/sources.list.d/pve-enterprise.list
+sed -i.bak "s/^deb/#deb/" /etc/apt/sources.list.d/ceph.list
+```
+- 변경 사항 확인
+```
+cat /etc/apt/sources.list.d/pve-enterprise.list
+cat /etc/apt/sources.list.d/ceph.list
+```
+- 패키지 리스트를 업데이트하여 저장소가 제대로 추가되었는지 확인합니다.
+```
+apt update
+```
+- 설치 가능한 패키지 리스트를 확인합니다.
+```
+apt list --upgradable
+```
+## -4. Subscription 팝업 제거
+
+- Proxmox는 기본적으로 비상업용 무료 사용자를 위한 구독 팝업을 표시합니다.
+- 언제: Proxmox 설치 후 초기 설정 시
+- 어디서: /etc/apt/sources.list.d/pve-enterprise.list 파일
+- 무엇을: 구독 팝업 제거
+- 어떻게: 파일의 내용을 주석 처리
+- 왜: 불필요한 팝업을 제거하여 사용성을 높이기 위해
+```
+sed -Ezi.bak "s/(Ext.Msg.show\(\{\s+title: gettext\('No valid sub)/void\(\{ \/\/\1/g" /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js && systemctl restart pveproxy.service
+```
+
+## -5. VD(HDD) 추가하기
+### 1. 디스크를 선택한다.
+![image](https://github.com/stpn94/HOME_LAB_SETTING/assets/79563672/add5154a-cc4f-4115-b1ed-b26324ad2b15)
+### 2. 초기화 한다.
+![image](https://github.com/stpn94/HOME_LAB_SETTING/assets/79563672/4ce9e2fa-50c7-43cf-a742-5f341c3b4169)
+### 3-1. Directory에 들어간다.
+![image](https://github.com/stpn94/HOME_LAB_SETTING/assets/79563672/088c9cb5-1434-48fc-ac93-7e2022386d55)
+### 3-2. Create Directory 한다.
+![image](https://github.com/stpn94/HOME_LAB_SETTING/assets/79563672/0cad76ac-aa42-44f5-b3b3-21a6b2cc1ef8)
+### 3-3. Create Directory 한다.
+![image](https://github.com/stpn94/HOME_LAB_SETTING/assets/79563672/e09706d7-2f42-4153-8e72-fb94474934e5)
+
+### 4. 삭제하려면
+![image](https://github.com/stpn94/HOME_LAB_SETTING/assets/79563672/10a7cf0f-0a3c-4652-abc7-03d7a320aba2)
+
 ##- 3. 네트워크 설정
 
 - 네트워크 설정을 통해 Proxmox 서버의 IP 주소를 고정할 수 있습니다.
@@ -143,13 +156,13 @@ cat /etc/apt/sources.list.d/pve-no-subscription.list
 - 무엇을: 고정 IP 설정
 - 어떻게: 인터페이스 설정 파일을 편집
 - 왜: 안정적인 네트워크 연결을 위해
-
+cat /etc/network/interfaces
 nano /etc/network/interfaces
 
 - 예시 설정:
 - 기존 설정 주석 처리 후 추가
-- auto eth0
-- iface eth0 inet static
+- auto vmbr0
+- iface vmbr0 inet static
 -     address 192.168.1.100
 -     netmask 255.255.255.0
 -     gateway 192.168.1.1
@@ -159,7 +172,7 @@ nano /etc/network/interfaces
 systemctl restart networking
 
 - 네트워크 설정 확인:
-ip addr show eth0
+ip addr show vmbr0
 
 
 ##- 4. 시간대 설정
